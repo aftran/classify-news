@@ -1,0 +1,1 @@
+These files are pickles containing collections of the training and testing files in the corpus.

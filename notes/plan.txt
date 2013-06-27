@@ -1,0 +1,58 @@
+Examine data set
+================
+Get counts for classes
+- 1000 per class.
+- That means there's no difference between micro- and macro-averaging during evaluation.
+- And we'll have a uniform class prior, unless we think of some clever prior instead.
+
+Split out a test set at random and don't look at it.
+
+Look at data and see if any obvious features leap out for initial attempt
+- Maybe replacing names with NAME.
+
+
+Training/feature engineering
+============================
+ML pipeline, parametrized by feature template set and, if feasible, ML algorithm.
+
+Get article text without headers, since that won't help us with the news site, and also strip line-initial runs of ">" and ":".
+
+In fact, quoted text ('>', ':') seems to be often (but not always) multi-represented in the corpus.
+- Sloppy response: ignore those lines.  Nicer response: detect duplicates.  Let's go with the former for now, because I suspect we'd only miss a small part of the corpus.
+- Complication: we probably DON'T want to ignore quoted text when classifying.  Just when training.  But see whether the extra complication would actually help.
+
+And although this won't help for the news website, consider features like "has quoted lines", since some newsgroups might be more response-oriented versus broadcast-oriented.
+
+Might as well start with naive Bayes, SVM and maxent.
+
+For SVM and maxent, need to review multiclass for SVMs: http://nlp.stanford.edu/IR-book/html/htmledition/multiclass-svms-1.html
+- OneVsRestClassifier
+
+Figure out what to do about the fact that if we have bag-of-words features, we'll have massive vectors.  Oh!  See 6.2.3. Text feature extraction, which might require a later version of sklearn.
+
+Expect to want different feature sets with each
+
+Starting with a small set of features then do error analysis to find more, ideally look for cases where system is blind to something relevant that we can notice and encode as a feature
+
+
+
+Testing
+=======
+<s>Probably want to macro-average, not micro-average.</s> (Doesn't matter in this test set.)
+Consider looking at feature weights and removing ones with low ones.
+I notice there's sklearn.svm.libsvm.cross_validation.
+
+
+
+Part 2: classifying document at URL
+===================================
+Ask Gummi if we should try to detect when an article fits none of those classes.  (Not entirely sure yet how to do that yet.)
+Strip HTML and consider paying attention to document fields, like considering the title to have appeared twice
+Manually optimize for good field weights (if time is running out, ask Gummi whether he'd like to see me do this, or it's enough that I mentioned it's possible)
+Hm, since this would require constructing our own test set, maybe they don't really need to see us optimize this, and it's more about being able to download and clean up HTTP data.
+
+
+Handoff
+=======
+Pickle the models
+Write usage instruction
