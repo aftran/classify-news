@@ -28,6 +28,8 @@ Might as well start with naive Bayes, SVM and maxent.
 For SVM and maxent, need to review multiclass for SVMs: http://nlp.stanford.edu/IR-book/html/htmledition/multiclass-svms-1.html
 - OneVsRestClassifier
 
+SVM is really slow, even with just 100 features.  I'm not properly standardizing the training vectors first; maybe that's why?
+
 Figure out what to do about the fact that if we have bag-of-words features, we'll have massive vectors.  Oh!  See 6.2.3. Text feature extraction, which might require a later version of sklearn.
 
 Expect to want different feature sets with each

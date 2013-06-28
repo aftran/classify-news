@@ -1,12 +1,18 @@
 from os import path
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn import preprocessing
+from collections import deque
+import codecs, sys
 
 
-def train(estimator, feature_templates, corpus_dir, train_paths):
+def train_estimator(estimator, feature_templates, corpus_dir, train_paths):
   """
   Trains estimator on the files in train_paths after using feature_templates to
   project them into feature space.  The class of each document is considered to
   be the name of the subfolder it is in.
+
+  Returns the vectorizer used to convert documents into feature
+  representations.  This is needed for predicting the class of new documents.
   
   The estimator MUST be multiclass: naive Bayes or a binary classifier wrapped
   in OneVsRestClassifier is acceptable.
@@ -21,18 +27,24 @@ def train(estimator, feature_templates, corpus_dir, train_paths):
   # big to fit in RAM, replace docs/read_corpus with an iterable that reads one
   # file at a time.
   docs = read_corpus(corpus_dir, train_paths)
-  class_labels = path2class_labels(train_paths)
+  class_labels = paths2class_labels(train_paths)
   analyzer = make_analyzer(feature_templates)
-  vectorizer = CountVectorizer(analyzer=analyzer)
+  # vectorizer = CountVectorizer(analyzer=analyzer, dtype=float64) # TODO: This is the true line.
+  vectorizer = CountVectorizer(dtype=float64) # TODO: This is the stub/test version of above.
+
+  print 'Vectorizing the corpus...'
   vectors = vectorizer.fit_transform(docs)
 
-  # TODO: I think we need to do something like
-  #   vectors = preprocessing.scale(vectors)
-  # here, at least when estimator is an SVM.  But that doesn't work for
-  # vector's data type (sparse numpy.int64).
+  # Data standardization is highly recommended for SVMs, but the following line
+  # changes the variances but does not recenter.  We would like to also
+  # do mean removal (that is, use with_mean=True), but I'm not sure how to do
+  # that with a sparse matrix.  The lack of recentering might be why SVMs take
+  # a long time to train, but I'm not sure.
+  vectors = preprocessing.scale(vectors, with_mean=False)
 
+  print 'Fitting estimator...'
   estimator.fit(vectors, class_labels)
-  return estimator
+  return vectorizer
 
 
 
@@ -57,7 +69,7 @@ def paths2class_labels(train_paths):
   the class labels of the documents at those paths, preserving order.
   Hard-coded to work with the 20_newsgroup corpus.
   """
-  return map(lambda x: path.split(x)(0),
+  return map(lambda x: path.split(x)[0],
              train_paths)
 
 
@@ -70,7 +82,7 @@ def read_corpus(corpus_dir, train_paths):
   result = deque()
   for train_path in train_paths:
     doc_path = path.join(corpus_dir, train_path)
-    with open(doc_path) as f:
+    with codecs.open(doc_path, 'r', 'cp850') as f: # cp850 is what worked
       result.append(f.read())
   return result
 
