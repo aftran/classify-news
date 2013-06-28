@@ -29,18 +29,15 @@ def train_estimator(estimator, feature_templates, corpus_dir, train_paths):
   docs = read_corpus(corpus_dir, train_paths)
   class_labels = paths2class_labels(train_paths)
   analyzer = make_analyzer(feature_templates)
-  # vectorizer = CountVectorizer(analyzer=analyzer, dtype=float64) # TODO: This is the true line.
-  vectorizer = CountVectorizer(dtype=float64) # TODO: This is the stub/test version of above.
+  vectorizer = CountVectorizer(analyzer=analyzer, dtype=float)
 
   print 'Vectorizing the corpus...'
   vectors = vectorizer.fit_transform(docs)
 
-  # Data standardization is highly recommended for SVMs, but the following line
-  # changes the variances but does not recenter.  We would like to also
-  # do mean removal (that is, use with_mean=True), but I'm not sure how to do
-  # that with a sparse matrix.  The lack of recentering might be why SVMs take
-  # a long time to train, but I'm not sure.
+  # Standardization, which is recommended if estimator is as SVM.
   vectors = preprocessing.scale(vectors, with_mean=False)
+  # Ideally we'd like to use with_mean=True, but I can't get that to work with
+  # a sparse matrix.
 
   print 'Fitting estimator...'
   estimator.fit(vectors, class_labels)

@@ -28,19 +28,21 @@ Might as well start with naive Bayes, SVM and maxent.
 For SVM and maxent, need to review multiclass for SVMs: http://nlp.stanford.edu/IR-book/html/htmledition/multiclass-svms-1.html
 - OneVsRestClassifier
 
-SVM is really slow, even with just 100 features.  I'm not properly standardizing the training vectors first; maybe that's why?
+Linear SVM is really slow, even with just 100 features.  Training is maybe quadratic in number of documents.  So I'll only return to SVM if I can't get other methods to perform well.  It might be worth looking for the SVMs intended for sparse data sets; I think they exist.
 
-Figure out what to do about the fact that if we have bag-of-words features, we'll have massive vectors.  Oh!  See 6.2.3. Text feature extraction, which might require a later version of sklearn.
+DONE Figure out what to do about the fact that if we have bag-of-words features, we'll have massive vectors.  Oh!  See 6.2.3. Text feature extraction, which might require a later version of sklearn.
 
 Expect to want different feature sets with each
 
 Starting with a small set of features then do error analysis to find more, ideally look for cases where system is blind to something relevant that we can notice and encode as a feature
 
+See whether the scaling, which we do in case the estimator is SVM, hurts non-SVM estimators.
+
 
 
 Testing
 =======
-<s>Probably want to macro-average, not micro-average.</s> (Doesn't matter in this test set.)
+<s>Probably want to macro-average, not micro-average.</s> (True but doesn't matter in this test set.)
 Consider looking at feature weights and removing ones with low ones.
 I notice there's sklearn.svm.libsvm.cross_validation.
 
