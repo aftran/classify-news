@@ -35,13 +35,22 @@ def train_estimator(estimator, feature_templates, corpus_dir, train_paths):
   vectors = vectorizer.fit_transform(docs)
 
   # Standardization, which is recommended if estimator is as SVM.
-  vectors = preprocessing.scale(vectors, with_mean=False)
+  # vectors = preprocessing.scale(vectors, with_mean=False)
+  # I'm omitting standardization for now since SVMs might be infeasible anyway.
+  # If we standardize later, be sure to output a function that lets us perform
+  # the same transformation to each test vector.
   # Ideally we'd like to use with_mean=True, but I can't get that to work with
   # a sparse matrix.
 
   print 'Fitting estimator...'
   estimator.fit(vectors, class_labels)
   return vectorizer
+
+
+
+def standardize(vectors):
+  """Do standardization, which is recomended if estimator is an SVM."""
+  return preprocessing.scale(vectors, with_mean=False)
 
 
 

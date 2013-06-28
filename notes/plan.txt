@@ -21,6 +21,8 @@ In fact, quoted text ('>', ':') seems to be often (but not always) multi-represe
 - Sloppy response: ignore those lines.  Nicer response: detect duplicates.  Let's go with the former for now, because I suspect we'd only miss a small part of the corpus.
 - Complication: we probably DON'T want to ignore quoted text when classifying.  Just when training.  But see whether the extra complication would actually help.
 
+Random idea: n-grams of POS tags.
+
 And although this won't help for the news website, consider features like "has quoted lines", since some newsgroups might be more response-oriented versus broadcast-oriented.
 
 Might as well start with naive Bayes, SVM and maxent.
@@ -45,6 +47,7 @@ Testing
 <s>Probably want to macro-average, not micro-average.</s> (True but doesn't matter in this test set.)
 Consider looking at feature weights and removing ones with low ones.
 I notice there's sklearn.svm.libsvm.cross_validation.
+- And 8.25.1. sklearn.pipeline.Pipeline¶.
 
 
 
@@ -60,3 +63,4 @@ Handoff
 =======
 Pickle the models
 Write usage instruction
+Could make doc strings more conformant if that's a good use of time.
