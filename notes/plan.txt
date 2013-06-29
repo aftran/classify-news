@@ -5,7 +5,7 @@ Get counts for classes
 - That means there's no difference between micro- and macro-averaging during evaluation.
 - And we'll have a uniform class prior, unless we think of some clever prior instead.
 
-Split out a test set at random and don't look at it.
+Split out a test set at random and don't look at it, if only for being able to believably say that our performance should generalize beyond the training set.
 
 Look at data and see if any obvious features leap out for initial attempt
 - Maybe replacing names with NAME.
@@ -53,6 +53,26 @@ I notice there's sklearn.svm.libsvm.cross_validation.
 Warning!  We'll need to make sure our testing isn't messed up by the fact that messages quote each other.  Even more reason to just ignore quotes?  I think there was a paper about this mentioned in IR class.  
 
 Warning (more important)!  Chris's book says of this corpus, "After the removal of duplicate articles, as it is usually used, it contains 18941 articles."  We absolutely must remove duplicate articles.  Asking Gummi if I can use a published deduplicated version of the corpus.
+- Decided to deal with it myself based on his response.
+
+Proposed policies for all duplicated text (might only bother to deal with it on the file level for now):
+- If both duplicates are in the same class, either train on both or test on both.
+- If the duplicates are between classes, I don't think we need to do anything special.  This will decrease our evaluation metrics, but that might give us some healthy encouragement to avoid overfitting.
+
+Proposed way to approximate these policies:
+- For pair of duplicated line ranges, blank out or ignore one of them.  But only do this when they're within the same newsgroup; it's okay to have cross-newsgroup duplication.
+- This could theoretically cause us to completely eradicate a bit of text from the corpus, but I'm guessing that's rare, so I'm going to not care about that right now.
+- The easiest way to implement this is probably to take the first column of sim_text's output and blank the line ranges mentioned there.  So we'd be generating our own copy of the corpus.
+- This will probably delete various headers.  That's fine unless I'm using headers for features.  We can do a recursive diff to see what the damage is, anyway.
+- Then delete the files that have become completely blank, just so they don't mess up our train/test ratios.
+- I'm currently doing all this by using Python to parse the output of sim_text and generate a bunch of sed commands that collectively generate a new corpus.  Very messy.
+
+To avoid deduplicating headers, we assume the last header line is '^Lines: [0-9]+$'.
+- Only fifteen documents are missing that line.  I don't really care about such a small number of potential (not guaranteed) errors.
+- Of the documents that have that line, it's always early (<18), which makes me rather confident that that is in fact where the headers end.
+- Oh, oops, it seems "the first blank line is actually better, based on glancing at the distribution of where the first blank line is.
+
+
 
 
 
