@@ -11,6 +11,7 @@ Look at data and see if any obvious features leap out for initial attempt
 - Maybe replacing names with NAME.
 
 
+
 Training/feature engineering
 ============================
 ML pipeline, parametrized by feature template set and, if feasible, ML algorithm.
@@ -48,6 +49,10 @@ Testing
 Consider looking at feature weights and removing ones with low ones.
 I notice there's sklearn.svm.libsvm.cross_validation.
 - And 8.25.1. sklearn.pipeline.Pipeline¶.
+
+Warning!  We'll need to make sure our testing isn't messed up by the fact that messages quote each other.  Even more reason to just ignore quotes?  I think there was a paper about this mentioned in IR class.  
+
+Warning (more important)!  Chris's book says of this corpus, "After the removal of duplicate articles, as it is usually used, it contains 18941 articles."  We absolutely must remove duplicate articles.  Asking Gummi if I can use a published deduplicated version of the corpus.
 
 
 
