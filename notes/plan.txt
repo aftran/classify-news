@@ -75,7 +75,9 @@ To avoid deduplicating headers, we assume the last header line is '^Lines: [0-9]
 With bag-of-words and bigram features, accuracy went from 90s to 70s when I got rid of headers.
 - This isn't too surprising, because there are probably a lot of shared subject lines and email addresses within a newsgroup, so we were probably overfitting when we had access to the headers.
 
+Porter stemming is a little bit slow in the vectorization phase.  But it still finishes after a few minutes.
 
+I'd like to use Porter2 (Snowball), but my version of NLTK lacks ...snowball.EnglishStemmer?!
 
 
 

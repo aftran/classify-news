@@ -10,6 +10,7 @@ headers.  Features that depend on headers are not supported.
 """
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.stem.porter import PorterStemmer
+from feature_support import *
 
 """Bag of n-grams."""
 def ngrams_factory(n):
@@ -17,6 +18,5 @@ def ngrams_factory(n):
 
 """Bag of n-grams after Porter-stemming."""
 def stem_ngrams_factory(n):
-  stemmer = PorterStemmer()
-  return CountVectorizer(ngram_range=(n,n),
-                         preprocessor=stemmer.stem).build_analyzer()
+  cv = CountVectorizer(ngram_range=(n,n), preprocessor=stem_text)
+  return cv.build_analyzer()

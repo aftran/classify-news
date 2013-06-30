@@ -71,7 +71,6 @@ def make_analyzer(feature_templates):
     features = deque()
     for feature_template in feature_templates:
       features.extend(feature_template(doc))
-      print 'The analyzer was called.' # TODO: Debug.
     return features
   return analyzer
 
