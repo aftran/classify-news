@@ -1,11 +1,10 @@
+#!/usr/bin/env python
 """
 For splitting the 20_newsgroup corpus into a test and non-test set randomly.
 Outputs pickled lists.
 
 Usage: data_subsets.py corpusdir outputdir
 """
-
-#!/usr/bin/env python
 import sys, random, pickle
 from collections import deque
 from os import listdir, path
@@ -26,8 +25,8 @@ def partition_corpus(corpusdir):
     relative_paths = map(lambda filename: path.join(newsgroup, filename),
                          filenames)
     random.shuffle(relative_paths)
-    test.extend(relative_paths[0:10])
-    rest.extend(relative_paths[10:])
+    test.extend(relative_paths[0:100])
+    rest.extend(relative_paths[100:])
   return test, rest
 
 

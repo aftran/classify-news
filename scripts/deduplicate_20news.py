@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Blank out duplicate lines in corpus given an index of duplicate text.
+Blank out duplicate lines within a newsgroup given an index of duplicate text.
 
 Usage: deduplicate_20news.py duplicates_index corpus_dir
 
@@ -15,16 +15,17 @@ for each newsgroup (=subdirectory) in the corpus.
 
 output_dir must exist.
 
-This is an approximation only: if a piece of text appears more than twice, it
-might be deleted altogether.
+This only approximates duplicate text deletion, because if a piece of text
+appears more than twice, it might be deleted altogether.
 """
-import sys, re
+import sys, re, email
+import os
 from os import path
 from subprocess import call
 
 """Regex for identifying the last line of a header block."""
-# LAST_HEADER_REGEX = '^Lines: \d+$' # misses 15 files
-LAST_HEADER_REGEX = '^$' # probably works perfectly
+# LAST_HEADER_REGEX = r'^Lines: \d+$' # misses 15 files
+LAST_HEADER_REGEX = r'^$' # probably works perfectly
 
 def last_header(filepath):
   """
@@ -40,6 +41,15 @@ def last_header(filepath):
                                                               filepath)
   return 0
 
+
+def delete_if_empty_payload(msg_path):
+  """Delete the email at msg_path if its payload only has white space."""
+  with open(msg_path) as f:
+    msg = email.message_from_file(f)
+  if re.match(r'^\s*$', msg.get_payload()):
+    os.remove(msg_path)
+    return True
+  else: return False
 
 
 dupsfile, outdir = sys.argv[1:]
@@ -65,3 +75,11 @@ with open(dupsfile) as f:
                        doc_path])
         if result > 0:
           print >> sys.stderr, 'Trouble with running sed on %s' % doc_path
+
+# Delete files that are nothing but line breaks.  We don't currently delete
+# files that contain only headers.
+for folder, _, filenames in os.walk(outdir):
+  for filename in filenames:
+    filepath = path.join(folder, filename)
+    if delete_if_empty_payload(filepath):
+      print 'Deleted empty email ' + filepath

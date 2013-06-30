@@ -78,7 +78,7 @@ To avoid deduplicating headers, we assume the last header line is '^Lines: [0-9]
 
 Part 2: classifying document at URL
 ===================================
-Ask Gummi if we should try to detect when an article fits none of those classes.  (Not entirely sure yet how to do that yet.)
+Consider asking Gummi if we should try to detect when an article fits none of those classes.  (Not entirely sure yet how to do that yet.)
 Strip HTML and consider paying attention to document fields, like considering the title to have appeared twice
 Manually optimize for good field weights (if time is running out, ask Gummi whether he'd like to see me do this, or it's enough that I mentioned it's possible)
 Hm, since this would require constructing our own test set, maybe they don't really need to see us optimize this, and it's more about being able to download and clean up HTTP data.
