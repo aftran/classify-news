@@ -79,11 +79,17 @@ Porter stemming is a little bit slow in the vectorization phase.  But it still f
 
 I'd like to use Porter2 (Snowball), but my version of NLTK lacks ...snowball.EnglishStemmer?!
 
+Okay, I realize my classifiers should be subclasses, not modules, so that the user can rely on the fields.
+
 
 
 Part 2: classifying document at URL
 ===================================
-Consider asking Gummi if we should try to detect when an article fits none of those classes.  (Not entirely sure yet how to do that yet.)
+Using requests library, but Ubuntu's is horribly out of date, so installing with pip.
+Can use joblib to serialize model and cloud (on pip) to serialize vectorizer.
+
+Consider asking Gummi if we should try to detect when an article fits none of those classes.  (Not entirely sure yet how we'd do that yet.)
+
 Strip HTML and consider paying attention to document fields, like considering the title to have appeared twice
 Manually optimize for good field weights (if time is running out, ask Gummi whether he'd like to see me do this, or it's enough that I mentioned it's possible)
 Hm, since this would require constructing our own test set, maybe they don't really need to see us optimize this, and it's more about being able to download and clean up HTTP data.
