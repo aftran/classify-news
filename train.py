@@ -3,7 +3,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn import preprocessing
 from collections import deque
 from numpy import array
-import codecs, sys
+import codecs, sys, email
 
 
 def train_estimator(estimator, feature_templates, corpus_dir, train_paths):
@@ -89,14 +89,15 @@ def paths2class_labels(train_paths):
 
 def read_corpus(corpus_dir, train_paths):
   """
-  An iterable whose elements are the raw text of each document pointed to by
-  train_paths, in that order.  The train_paths are relative to the corpus_dir.
+  Return an iterable whose elements are the raw payload text (no headers) of
+  each email pointed to by train_paths, in that order.  The train_paths are
+  relative to the corpus_dir.
   """
   result = deque()
   for train_path in train_paths:
     doc_path = path.join(corpus_dir, train_path)
     with codecs.open(doc_path, 'r', 'cp850') as f: # cp850 is what worked
-      result.append(f.read())
+      result.append(email.message_from_file(f).get_payload())
   return result
 
 
