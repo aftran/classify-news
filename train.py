@@ -71,6 +71,7 @@ def make_analyzer(feature_templates):
     features = deque()
     for feature_template in feature_templates:
       features.extend(feature_template(doc))
+      print 'The analyzer was called.' # TODO: Debug.
     return features
   return analyzer
 
@@ -99,15 +100,3 @@ def read_corpus(corpus_dir, train_paths):
     with codecs.open(doc_path, 'r', 'cp850') as f: # cp850 is what worked
       result.append(email.message_from_file(f).get_payload())
   return result
-
-
-
-def doc2vector(docs, feature_templates):
-  """
-  A vector representation of a document given a list of feature templates.  The
-  order of the vector components is consistent given a value of
-  feature_templates.
-  """
-  # TODO: A bag of words feature template can't just 
-  return reduce(
-                map(lambda x: x(doc), feature_templates))

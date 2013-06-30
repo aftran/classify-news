@@ -72,6 +72,9 @@ To avoid deduplicating headers, we assume the last header line is '^Lines: [0-9]
 - Of the documents that have that line, it's always early (<18), which makes me rather confident that that is in fact where the headers end.
 - Oh, oops, it seems "the first blank line is actually better, based on glancing at the distribution of where the first blank line is.
 
+With bag-of-words and bigram features, accuracy went from 90s to 70s when I got rid of headers.
+- This isn't too surprising, because there are probably a lot of shared subject lines and email addresses within a newsgroup, so we were probably overfitting when we had access to the headers.
+
 
 
 
