@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""An SVM classifier with a hand-crafted set of features."""
+"""An SVM (SVC) classifier with suggested features. Quite slow."""
 from sklearn import svm
 import feature as fe
 
@@ -9,6 +9,6 @@ estimator = svm.SVC(kernel='rbf', C=1.0)
 # likely a priori.
 
 feature_templates = [
-    fe.stem_ngrams_factory(1),
-    # fe.stem_ngrams_factory(2)
+    fe.stem_ngrams_factory(1,1),
+    # fe.stem_ngrams_factory(2,2)
 ]

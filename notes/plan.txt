@@ -10,6 +10,8 @@ Split out a test set at random and don't look at it, if only for being able to b
 Look at data and see if any obvious features leap out for initial attempt
 - Maybe replacing names with NAME.
 
+There ARE attachments we'll want to remove.  Though maybe at worst they'll just result in a bunch of one-hot features that bloat the model.
+
 
 
 Training/feature engineering
@@ -83,6 +85,23 @@ Okay, I realize my classifiers should be subclasses, not modules, so that the us
 
 
 
+Observations about results
+==========================
+When I fixed the bug that stopped me from properly deleting empty emails in the deduplicated corpus, NB went up slightly to 80% and linSVC went down from 60 to 58.
+- I'm surprised in the linSVC getting worse, actually, because you'd think it would be improved without all those zero vectors.  Which makes me think more regularization might be a good idea.
+
+Maxent with stemmed unigrams was only 0.749577940349.
+With stemmed unigrams AND bigrams: 0.7614
+
+NB with POS 1,2-grams: 0.79628587507
+Alpha up to 10, POS trigrams et stem uni,bi: 0.821046707935
+And get rid of POS tags, leaving JUST uni,bi stems, and we get 0.832301631964.
+
+LinearSVC 0.754642656162 now that we no longer do the wrong standardization.  Ideally we should do the correct standardization, though.
+
+
+
+
 Part 2: classifying document at URL
 ===================================
 Using requests library, but Ubuntu's is horribly out of date, so installing with pip.
@@ -100,3 +119,4 @@ Handoff
 Pickle the models
 Write usage instruction
 Could make doc strings more conformant if that's a good use of time.
+Okay, just hours from the end of my work, I did glance at http://www-nlp.stanford.edu/wiki/Software/Classifier/20_Newsgroups to see how my performance compared to others (basically, we're almost 10 percentage points below the best models mentioned on that page).

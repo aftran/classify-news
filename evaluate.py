@@ -40,8 +40,11 @@ def dev_evaluate(estimator, feature_templates, corpus_dir, data_paths):
                                   corpus_dir, train_paths)
   test_vectors = vectorize_corpus_with_vectorizer(vectorizer, corpus_dir,
                                                   test_paths)
-  test_vectors = standardize(test_vectors)
-  # return estimator.score(test_vectors, test_labels)
+
+  # TODO: This is the wrong way to standardize.  We need the same standardizer
+  # that was fit to the training corpus.
+  # test_vectors = standardize(test_vectors)
+
   predictions = estimator.predict(test_vectors)
   mistakes = deque()
   for path, gold, prediction in zip(test_paths, test_labels, predictions):
