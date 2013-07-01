@@ -30,6 +30,7 @@ column1_width = 1 + max(map(lambda pair: len(pair[0]),
                             mistakes))
 
 for doc_path, wrong_class in mistakes:
-  print doc_path + ' ' * (column1_width - len(doc_path)) + wrong_class
+  text = doc_path + ' ' * (column1_width - len(doc_path)) + wrong_class
+  print >> sys.stderr, text
 
-print 'Accuracy: %f' % score
+print score
