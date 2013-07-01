@@ -2,7 +2,7 @@
 """
 Given URLs from CNN to stdin, output the most likely 20_newsgroup for each page.
 
-Usage: cnn.py feature_templates estimator
+Usage: cnn.py vectorizer estimator
 
 vectorizer and estimator are an sklearn vectorizer and trained estimator.
 
