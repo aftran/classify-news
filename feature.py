@@ -9,14 +9,29 @@ Features templates expect to only be given the newsgroup message's payload, no
 headers.  Features that depend on headers are not supported.
 """
 from sklearn.feature_extraction.text import CountVectorizer
-from nltk.stem.porter import PorterStemmer
+import nltk
 from feature_support import *
 
 """Bag of n-grams."""
 def ngrams_factory(n):
   return CountVectorizer(ngram_range=(n,n)).build_analyzer()
 
+
+
 """Bag of n-grams after Porter-stemming."""
 def stem_ngrams_factory(n):
   cv = CountVectorizer(ngram_range=(n,n), preprocessor=stem_text)
   return cv.build_analyzer()
+
+
+
+"""Bag of part-of-speech n-grams."""
+def pos_ngrams_factory(n):
+  ngrams = ngrams_factory(n)
+  def pos_ngrams(doc):
+    tokens = nltk.word_tokenize(doc)
+    tagged = nltk.pos_tag(tokens)
+    tags_only = map(lambda (a,b): a,
+                    tagged)
+    return ngrams(' '.join(tags_only))
+  return pos_ngrams
