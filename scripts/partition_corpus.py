@@ -27,6 +27,8 @@ def partition_corpus(corpusdir):
     random.shuffle(relative_paths)
     test.extend(relative_paths[0:100])
     rest.extend(relative_paths[100:])
+  random.shuffle(test)
+  random.shuffle(rest)
   return test, rest
 
 

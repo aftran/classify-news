@@ -50,6 +50,14 @@ def vectorize_corpus(feature_templates, corpus_dir, train_paths):
 
 
 
+def vectorize_corpus_with_vectorizer(vectorizer, corpus_dir, data_paths):
+  """Given an already-fit vectorizer, return sparse matrix of row vectors."""
+  docs = read_corpus(corpus_dir, data_paths)
+  vectors = vectorizer.transform(docs)
+  return vectors
+
+
+
 def standardize(vectors):
   """Do standardization, which is recomended if estimator is an SVM."""
   return preprocessing.scale(vectors, with_mean=False)
