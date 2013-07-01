@@ -27,11 +27,10 @@ def stem_ngrams_factory(n):
 
 """Bag of part-of-speech n-grams."""
 def pos_ngrams_factory(n):
-  ngrams = ngrams_factory(n)
   def pos_ngrams(doc):
     tokens = nltk.word_tokenize(doc)
     tagged = nltk.pos_tag(tokens)
-    tags_only = map(lambda (a,b): a,
+    tags_only = map(lambda (_,b): b,
                     tagged)
-    return ngrams(' '.join(tags_only))
+    return list2ngrams(n, tags_only)
   return pos_ngrams
