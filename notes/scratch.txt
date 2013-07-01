@@ -1,3 +1,6 @@
+Scratch pad.  See README for a cleaner version of many of these thoughts.
+
+
 Examine data set
 ================
 Get counts for classes
