@@ -19,7 +19,12 @@ def kfold(estimator, feature_templates, corpus_dir, data_paths):
   return cross_val_score(estimator, vectors, class_labels, cv=5)
 
 def dev_evaluate(estimator, feature_templates, corpus_dir, data_paths):
-  """Evaluate the corpus with as 90% train, 10% test from end of corpus."""
+  """
+  Evaluate the corpus with as 90% train, 10% test from end of corpus.
+
+  Return the accuracy and a collection of (path, category) pairs, one for each
+  mistake made on the test set.
+  """
   data_paths = list(data_paths) # can't slice a deque
   class_labels = paths2class_labels(data_paths)
   split_point = int(0.9 * len(data_paths))
@@ -35,6 +40,7 @@ def dev_evaluate(estimator, feature_templates, corpus_dir, data_paths):
                                   corpus_dir, train_paths)
   test_vectors = vectorize_corpus_with_vectorizer(vectorizer, corpus_dir,
                                                   test_paths)
+  test_vectors = standardize(test_vectors)
   # return estimator.score(test_vectors, test_labels)
   predictions = estimator.predict(test_vectors)
   mistakes = deque()
