@@ -42,44 +42,52 @@ def last_header(filepath):
   return 0
 
 
-def delete_if_empty_payload(msg_path):
-  """Delete the email at msg_path if its payload only has white space."""
+
+def empty_payload(msg_path):
+  """Return whether the email at msg_path has a whitespace-only payload."""
   with open(msg_path) as f:
     msg = email.message_from_file(f)
-  if re.match(r'^\s*$', msg.get_payload()):
-    os.remove(msg_path)
+  if msg.get_payload().strip() == '':
     return True
-  else: return False
+  else:
+    return False
 
 
-dupsfile, outdir = sys.argv[1:]
-with open(dupsfile) as f:
-  for line in f:
-    match = re.match('([^/]+/\d+): line (\d+)-(\d+)\s*\|.*$', line)
-    if match:
-      doc        = match.group(1)
-      start_line = int(match.group(2))
-      end_line   = int(match.group(3))
-      doc_path   = path.join(outdir, doc)
 
-      # Don't blank out headers, even if they're duplicates.  But DO blank out
-      # any non-header text that's part of this range.
-      last_header_line = last_header(doc_path)
-      if end_line > last_header_line:
-        if start_line < last_header_line:
-          start_line = last_header_line + 1
+def main():
+  dupsfile, outdir = sys.argv[1:]
+  with open(dupsfile) as f:
+    for line in f:
+      match = re.match('([^/]+/\d+): line (\d+)-(\d+)\s*\|.*$', line)
+      if match:
+        doc        = match.group(1)
+        start_line = int(match.group(2))
+        end_line   = int(match.group(3))
+        doc_path   = path.join(outdir, doc)
 
-        result = call(['sed',
-                       '-i',
-                       '%s,%ss/.*//' % (start_line, end_line),
-                       doc_path])
-        if result > 0:
-          print >> sys.stderr, 'Trouble with running sed on %s' % doc_path
+        # Don't blank out headers, even if they're duplicates.  But DO blank out
+        # any non-header text that's part of this range.
+        last_header_line = last_header(doc_path)
+        if end_line > last_header_line:
+          if start_line < last_header_line:
+            start_line = last_header_line + 1
 
-# Delete files that are nothing but line breaks.  We don't currently delete
-# files that contain only headers.
-for folder, _, filenames in os.walk(outdir):
-  for filename in filenames:
-    filepath = path.join(folder, filename)
-    if delete_if_empty_payload(filepath):
-      print 'Deleted empty email ' + filepath
+          result = call(['sed',
+                         '-i',
+                         '%s,%ss/.*//' % (start_line, end_line),
+                         doc_path])
+          if result > 0:
+            print >> sys.stderr, 'Trouble with running sed on %s' % doc_path
+
+  # Delete files that are nothing but line breaks.  We don't currently delete
+  # files that contain only headers.
+  for folder, _, filenames in os.walk(outdir):
+    for filename in filenames:
+      filepath = path.join(folder, filename)
+      if empty_payload(filepath):
+        os.remove(filepath)
+        print 'Deleted empty email ' + filepath
+
+
+
+if __name__ == '__main__': main()
