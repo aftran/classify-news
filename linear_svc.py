@@ -29,7 +29,7 @@ feature_templates = [
     # part-of-speech 1,2,3-grams
     fe.pos_ngrams_factory(1,3)
 
-    # part-of-speech unigrams: probably too dense
+    # part-of-speech unigrams
     # fe.pos_ngrams_factory(1,1),
 
     # part-of-speech bigrams

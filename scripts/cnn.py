@@ -9,6 +9,8 @@ vectorizer and estimator are an sklearn vectorizer and trained estimator.
 vectorizer must have been saved with cloud.serialization.cloudpickle.dump, and
 estimator must have been saved with joblib.dump.
 """
+import sys
+sys.path.append('..')
 from bs4 import BeautifulSoup
 from collections import deque
 from sklearn.externals import joblib

@@ -1,0 +1,76 @@
+Dependencies
+============
+- python-nltk with Brown corpus
+- python-cloud (available on pip)
+- python-sklearn 0.13.1 (stable release as of writing)
+- python-requests
+- python-bs4
+- sim (Debian package similarity-tester)
+
+
+
+Quick Start
+===========
+To train a model:
+
+- Extract the 20_newsgroups corpus into $original_corpus_dir.
+- From this repository, run:
+
+  cd scripts
+  ./deduplicate_20news.zsh $original_corpus_dir /tmp/dupsfile $deduped_corpus_dir
+  ./partition_corpus $deduped_corpus_dir ../corpus_partitions
+  ./save_model.py linear_svc $deduped_corpus_dir ../corpus_partitions/rest ../saved_models
+
+To classify URLs based on the best model, run:
+
+  cd scripts
+  ./cnn.py ../saved_models/linear_svm.vectorizer ../saved_models/linear_svm.estimator
+
+And paste a URL at the command prompt.
+
+This model being used here is defined in linear_svc.py.
+
+
+
+Text Deduplication
+==================
+The corpus has a lot of duplicated text due to cross-posting and quoting.  We don't want the same piece of text to show up in both the training and testing sets within the same newsgroup, because we'll overfit and have artificially high accuracies.  To solve this, I wrapped a command-line duplicate text finder in scripts/deduplicate_20news.zsh, which outputs a new deduplicated corpus.  This has the added advantage of preventing us from learning too much from the oft-repeated email signatures.
+
+Cross-newsgroup duplicate text is allowed to remain.  This is the right thing to do, because cross-posting is a fact of life, deduplicating across newsgroups would introduce bias, and cross-newsgroup posts will not artificially inflate our score even if the same text appears in the training and testing sets.
+
+
+
+Training and Evaluation
+=======================
+There are several classifiers, each with its own suggested list of features.  Each classifier is its own Python module.  The scripts save_model.py and find_mistakes.py can be used to train and evaluate them.
+
+The classifier I endorse is linear_svm, which has 83% accuracy in my development test set.  Its features are:
+- bag-of-stems
+- 1-, 2- and 3-gram part-of-speech
+The feature counts are IDF-weighted.  The part-of-speech tagging is unigram-based; sophisticated methods are slow and unnecessary.
+
+Another model is knn, which scored 71% accuracy with bag-of-stems features.
+
+An additional 10% of the corpus has been set aside as an unseen test set.
+
+
+
+Future Work
+===========
+Error analysis in order to propose new features.  So far I have just made educated guesses about which features to try.
+
+Some NER-dependent features to try:
+- A feature for "includes a place name".
+- Replace people's names with "PERSON NAME", since those will be sparse and probably uncorrelated with newsgroup.
+
+The various classifiers should be classes, not modules.
+
+I did not formally evaluate the CNN classifier.  One way to do this would be to save some URLs from each class.  This is a relatively easy corpus to construct, because CNN has categories.
+
+When classifying a CNN page, it would make sense to include the title and URL text, appropriately tokenized and probably weighted more highly than the body text.
+
+Since I've deduplicated the text within a newsgroup, but allowed duplicate text to remain across newsgroups due to cross-posting, sometimes a better model will fit this particular training data worse.  Figure out whether that's a good thing because it's preventing overfitting, or if raw accuracy scores are misleading in some systematic way that we can correct for.
+
+There are email attachments in the corpus.  The right thing to do is replace them with a single HAS_ATTACHMENT feature.  Currently I treat them just like the rest of the text.
+
+Make the scripts able to be run from any pwd.
