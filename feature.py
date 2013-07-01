@@ -13,24 +13,26 @@ import nltk
 from feature_support import *
 
 """Bag of n-grams."""
-def ngrams_factory(n):
-  return CountVectorizer(ngram_range=(n,n)).build_analyzer()
+def ngrams_factory(n1, n2):
+  return CountVectorizer(ngram_range=(n1,n2)).build_analyzer()
 
 
 
 """Bag of n-grams after Porter-stemming."""
-def stem_ngrams_factory(n):
-  cv = CountVectorizer(ngram_range=(n,n), preprocessor=stem_text)
+def stem_ngrams_factory(n1, n2):
+  cv = CountVectorizer(ngram_range=(n1,n2), preprocessor=stem_text)
   return cv.build_analyzer()
 
 
 
 """Bag of part-of-speech n-grams."""
-def pos_ngrams_factory(n):
+def pos_ngrams_factory(n1, n2):
   def pos_ngrams(doc):
+    # doc = doc[0:200] # sloppy way to speed things up
     tokens = nltk.word_tokenize(doc)
-    tagged = nltk.pos_tag(tokens)
+    tagged = tag(tokens)
     tags_only = map(lambda (_,b): b,
                     tagged)
-    return list2ngrams(n, tags_only)
+    safe_tags_only = map(str, tags_only)
+    return list2ngrams(n1, n2, safe_tags_only)
   return pos_ngrams
