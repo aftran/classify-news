@@ -1,5 +1,5 @@
 from os import path
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import preprocessing
 from collections import deque
 from numpy import array
@@ -48,7 +48,7 @@ def vectorize_corpus(feature_templates, corpus_dir, train_paths):
   # file at a time.
   docs = read_corpus(corpus_dir, train_paths)
   analyzer = make_analyzer(feature_templates)
-  vectorizer = CountVectorizer(analyzer=analyzer, dtype=float)
+  vectorizer = TfidfVectorizer(analyzer=analyzer, dtype=float)
   vectors = vectorizer.fit_transform(docs)
   return vectors, vectorizer
 

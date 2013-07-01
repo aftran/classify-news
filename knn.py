@@ -1,12 +1,16 @@
 #!/usr/bin/env python
-"""A linear SVC (SVM) classifier with suggested features."""
-from sklearn import svm
+"""A K-nearest-neighbours classifier with suggested features."""
+from sklearn import neighbors
 from sklearn.multiclass import OneVsRestClassifier
 import feature as fe
 
-estimator = OneVsRestClassifier(svm.LinearSVC())
+# TODO: We're not giving KNN a fair go until we properly
+# divide the mean out of each dimension.
+
+estimator = OneVsRestClassifier(neighbors.KNeighborsClassifier())
 
 feature_templates = [
+    # All other features I've added have hurt.
 
     # stem 1- and 2-grams
     # fe.stem_ngrams_factory(1,2),
@@ -27,7 +31,7 @@ feature_templates = [
     # fe.stem_ngrams_factory(2,2),
 
     # part-of-speech 1,2,3-grams
-    fe.pos_ngrams_factory(1,3)
+    # fe.pos_ngrams_factory(1,3)
 
     # part-of-speech unigrams: probably too dense
     # fe.pos_ngrams_factory(1,1),
@@ -36,5 +40,5 @@ feature_templates = [
     # fe.pos_ngrams_factory(2,2),
 
     # part-of-speech trigrams
-    # fe.pos_ngrams_factory(3,3),
+    # fe.pos_ngrams_factory(3,3), # slightly harms accuracy
 ]

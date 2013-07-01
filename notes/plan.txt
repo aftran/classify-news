@@ -99,6 +99,14 @@ And get rid of POS tags, leaving JUST uni,bi stems, and we get 0.832301631964.
 
 LinearSVC 0.754642656162 now that we no longer do the wrong standardization.  Ideally we should do the correct standardization, though.
 
+Correcting the standardization mistake actually seriously hurts naive Bayes.  This means naive Bayes works better when the components have had their variances divided out...   but NOT when the test docs have the same correction applied?
+- So let's try IDF weighting.  Well, that didn't HURT, until we introduced POS trigrams...
+
+But TF-IDF causes LinearSVC to now perform nicely, at 0.835115362971!
+Sticking with 0.83455261677 for using stems
+
+Well, with TF-IDF and just bag-of-stems, KNN gets 0.707934721441.  Adding more features seems to make it perform horribly.
+
 
 
 
