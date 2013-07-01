@@ -1,5 +1,9 @@
 #!/usr/bin/env python
-"""A naive Bayes classifier with a hand-crafted set of features."""
+"""
+A linear regression classifier with a hand-crafted set of features.
+
+This is too slow to be of any use on the 20_newsgroup corpus.
+"""
 from sklearn.linear_model import LinearRegression
 from sklearn.multiclass import OneVsRestClassifier
 import feature as fe
