@@ -9,7 +9,7 @@ Features templates expect to only be given the newsgroup message's payload, no
 headers.  Features that depend on headers are not supported.
 """
 from sklearn.feature_extraction.text import CountVectorizer
-import nltk
+import nltk, re
 from feature_support import *
 
 """Bag of n-grams."""
@@ -36,3 +36,16 @@ def pos_ngrams_factory(n1, n2):
     safe_tags_only = map(str, tags_only)
     return list2ngrams(n1, n2, safe_tags_only)
   return pos_ngrams
+
+
+
+"""
+Whether the doc has a dollar amount: either $ with a number shortly afterwards,
+or "dollars" with a number shortly before.  Meant to correlate with
+misc.forsale.
+"""
+def has_dollar_amount(doc):
+  if re.match(r'.*[$]\s*\d+', doc) or re.match(r'.*\d+\s*dollars', doc):
+    return ['HAS_DOLLAR_AMOUNT']
+  else:
+    return []

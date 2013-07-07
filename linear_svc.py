@@ -27,7 +27,7 @@ feature_templates = [
     # fe.stem_ngrams_factory(2,2),
 
     # part-of-speech 1,2,3-grams
-    fe.pos_ngrams_factory(1,3)
+    fe.pos_ngrams_factory(1,3),
 
     # part-of-speech unigrams
     # fe.pos_ngrams_factory(1,1),
@@ -37,4 +37,7 @@ feature_templates = [
 
     # part-of-speech trigrams
     # fe.pos_ngrams_factory(3,3),
+
+    # whether currency is mentioned (US-centric for now)
+    # fe.has_dollar_amount, # makes no difference at all!
 ]
