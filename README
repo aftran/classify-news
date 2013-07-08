@@ -24,7 +24,7 @@ To train a model:
 To classify URLs based on the best model, run:
 
   cd scripts
-  ./cnn.py ../saved_models/linear_svm.vectorizer ../saved_models/linear_svm.estimator
+  ./cnn.py ../saved_models/linear_svm.vectorizer ../saved_models/linear_svc.estimator
 
 And paste a URL at the command prompt.
 
