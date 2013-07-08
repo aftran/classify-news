@@ -40,9 +40,29 @@ def pos_ngrams_factory(n1, n2):
 
 
 """
-Whether the doc has a dollar amount: either $ with a number shortly afterwards,
-or "dollars" with a number shortly before.  Meant to correlate with
-misc.forsale.
+Bag of word length n-grams, binned.
+
+binning_divisor controls how large each bin is.  The word lengths are divided
+by binning_divisor then rounded down.  Smaller values of binning_divisor mean
+sparser word length features.
+"""
+def word_length_ngrams_factory(n1, n2, binning_divisor):
+  def word_length_ngrams(doc):
+    tokens = nltk.word_tokenize(doc)
+    lengths = map(lambda w: str(len(w)/binning_divisor),
+                  tokens)
+    length_ngrams = map(lambda x: 'LENGTH ' + x,
+                        list2ngrams(n1, n2, lengths))
+    return length_ngrams
+  return word_length_ngrams
+
+
+
+"""
+Whether the doc has a dollar amount (US-centric).
+
+Either $ with a number shortly afterwards, or "dollars" with a number shortly
+before.  Meant to correlate with misc.forsale.
 """
 def has_dollar_amount(doc):
   if re.match(r'.*[$]\s*\d+', doc) or re.match(r'.*\d+\s*dollars', doc):

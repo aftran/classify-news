@@ -1,14 +1,14 @@
 from os import path
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import preprocessing
-from collections import deque
+from collections import deque, defaultdict
 from numpy import array
 import codecs, sys, email
 
 
 def train_estimator(estimator, feature_templates, corpus_dir, train_paths):
   """
-  Trains estimator on the files in train_paths after using feature_templates to
+  Train estimator on the files in train_paths after using feature_templates to
   project them into feature space.  The class of each document is considered to
   be the name of the subfolder it is in.
 
@@ -72,7 +72,7 @@ def standardize(vectors):
 
 def make_analyzer(feature_templates):
   """
-  Returns a closure that returns a sequence of features given a list of feature
+  Return a closure that returns a sequence of features given a list of feature
   templates.  Each feature template takes a document and returns a list of
   features.
   """
@@ -107,4 +107,33 @@ def read_corpus(corpus_dir, train_paths):
     doc_path = path.join(corpus_dir, train_path)
     with codecs.open(doc_path, 'r', 'cp850') as f: # cp850 is what worked
       result.append(email.message_from_file(f).get_payload())
+  return result
+
+
+
+def features_by_class(vectorizer, vectors, class_labels):
+  """
+  Return a map from each feature to a histogram over classes.
+
+  A histogram is a map from class to count.
+
+  vectorizer has already been fit to its training corpus.
+  vectors is the vector representation output by vectorizer.
+  class_labels is the label of each row of vectors.
+  """
+  # Function that makes a new dictionary that maps each class to zero.  I'm not
+  # using a defaultdict here is this way it pretty-prints better in ipython,
+  # and this lets us enumerate the classes by enumerating the keys.
+  class_label_types = set(class_labels)
+  def zero_class_counts():
+    rdict = dict()
+    for class_label in class_label_types:
+      rdict[class_label] = 0
+    return rdict
+
+  result = defaultdict(zero_class_counts)
+  docs_as_features = vectorizer.inverse_transform(vectors)
+  for row, features in enumerate(docs_as_features):
+    for feature in features:
+      result[feature][class_labels[row]] += 1
   return result

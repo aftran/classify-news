@@ -23,3 +23,8 @@ def list2ngrams(n1, n2, lst):
   for nn in range(n1, n2+1):
     for ix in range(0, len(lst) - nn):
       yield ' '.join(lst[ix:ix+nn])
+
+
+
+def text2word_lengths(text):
+  """The text with each word replaced by 'len(L)', L is the word's length."""
