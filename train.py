@@ -8,9 +8,10 @@ import codecs, sys, email
 
 def train_estimator(estimator, feature_templates, corpus_dir, train_paths):
   """
-  Train estimator on the files in train_paths after using feature_templates to
-  project them into feature space.  The class of each document is considered to
-  be the name of the subfolder it is in.
+  Train estimator given corpus and features.
+
+  The class of each document is considered to be the name of the subfolder it
+  is in.
 
   Returns a pair: the vectorized corpus (a sparse matrix of row vectors) and
   the vectorizer used to convert documents into feature representations, which
@@ -28,11 +29,6 @@ def train_estimator(estimator, feature_templates, corpus_dir, train_paths):
   print 'Vectorizing the corpus...'
   vectors, vectorizer = vectorize_corpus(feature_templates,
                                          corpus_dir, train_paths)
-
-  # TODO: Standardization is recommended with SVMs, but must use the same
-  # multipliers when evaluating as well.  Either way, we can only achieve
-  # variance removal, not mean removal.
-  # vectors = standardize(vectors)
 
   print 'Fitting the estimator...'
   class_labels = paths2class_labels(train_paths)
