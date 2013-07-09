@@ -61,7 +61,11 @@ Future Work
 ===========
 My main regret is a lack of actually looking at the errors in order to think of new features.  So far I have just made educated guesses about which features to try.
 
-My other main regret is not using the sklearn pipeline features, which would have made it easier to standardize properly and avoid saving the vectorizers separately from the classifiers.
+My other main regret is not using the sklearn pipeline class, which would have made train.py smaller and let us do things like standardization more properly.
+
+I tried doing PCA before LinearSVC, both to take advantage of PCA and to make standardization possible, since the output vectors are dense.  I found that although PCA gave us almost the same results (79%) with fewer features (900), it's slow and takes up a lot of RAM.  But this was with the same feature set.  It could be good to mindlessly add a lot more features, hoping that PCA will select the ones that help the most.
+
+Similarly, mindlessly add a bunch more features and see if the percentile-based feature selector can choose the best ones.
 
 Some NER-dependent features to try:
 - A feature for "includes a place name".
