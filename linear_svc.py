@@ -2,9 +2,22 @@
 """A linear SVC (SVM) classifier with suggested features."""
 from sklearn import svm
 from sklearn.multiclass import OneVsRestClassifier
+from sklearn.feature_selection import SelectPercentile, chi2
+from sklearn.pipeline import Pipeline
 import feature as fe
 
-estimator = OneVsRestClassifier(svm.LinearSVC())
+"""
+Feature selection: only use features with a top-PERCENTILE chi2 score.
+
+Set to 100 to disable feature selection.
+"""
+PERCENTILE = 30
+
+svc = OneVsRestClassifier(svm.LinearSVC())
+selector = SelectPercentile(score_func=chi2, percentile=PERCENTILE)
+steps = [('choose top features', selector),
+         ('linear SVC',          svc)]
+estimator = Pipeline(steps)
 
 feature_templates = [
 

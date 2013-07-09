@@ -44,10 +44,12 @@ Training and Evaluation
 =======================
 There are several classifiers, each with its own suggested list of features.  Each classifier is its own Python module.  The scripts save_model.py and find_mistakes.py can be used to train and evaluate them.
 
-The classifier I endorse is linear_svm, which has 83% accuracy in my development test set.  Its features are:
-- bag-of-stems
-- 1-, 2- and 3-gram part-of-speech
-The feature counts are IDF-weighted.  The part-of-speech tagging is unigram-based; sophisticated methods are slow and unnecessary.
+The classifier I endorse is linear_svc, which has 83% accuracy in my development test set.  Its initial feature set is:
+- bag of stems
+- bag of part of speech tags
+But only the top 30% features are kept, scored by a chi^2 process.  This, I found, performs just as well as keeping all 100% of the features.
+
+The feature counts are IDF-weighted.  The part-of-speech tagging is unigram-based; sophisticated methods are slow and, I suspect, unnecessary.
 
 Another model is knn, which scored 71% accuracy with bag-of-stems features.
 
@@ -57,7 +59,9 @@ An additional 10% of the corpus has been set aside as an unseen test set.
 
 Future Work
 ===========
-Error analysis in order to propose new features.  So far I have just made educated guesses about which features to try.
+My main regret is a lack of actually looking at the errors in order to think of new features.  So far I have just made educated guesses about which features to try.
+
+My other main regret is not using the sklearn pipeline features, which would have made it easier to standardize properly and avoid saving the vectorizers separately from the classifiers.
 
 Some NER-dependent features to try:
 - A feature for "includes a place name".
@@ -71,6 +75,6 @@ When classifying a CNN page, it would make sense to include the title and URL te
 
 Since I've deduplicated the text within a newsgroup, but allowed duplicate text to remain across newsgroups due to cross-posting, sometimes a better model will fit this particular training data worse.  Figure out whether that's a good thing because it's preventing overfitting, or if raw accuracy scores are misleading in some systematic way that we can correct for.
 
-There are email attachments in the corpus.  The right thing to do is replace them with a single HAS_ATTACHMENT feature.  Currently I treat them just like the rest of the text.
+There are email attachments in the corpus.  The right thing to do is replace them with a single HAS_ATTACHMENT feature.  Currently I treat them just like the rest of the text.  As a result, in a very small number of documents, the bags of words include a few hundred "garbage" words that only appear once.
 
 Make the scripts able to be run from any pwd.
